@@ -8,11 +8,11 @@ import org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG
 import org.apache.kafka.streams.kstream.{TimeWindows, Windowed}
 
 
-object LongDistanceFlyers extends App {
+object LongDistanceTravellers extends App {
   import Serdes._
   val T  = 20
   val props = new Properties()
-  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "long-distance-flyers-application")
+  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "long-distance-travellers-application")
   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
   props.put(AUTO_OFFSET_RESET_CONFIG, "earliest")
   props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.stringSerde.getClass)
@@ -37,7 +37,7 @@ object LongDistanceFlyers extends App {
 
 
   longDistanceTravellers.toStream.foreach((key, value) => {
-    println(s"Bee $key is a long-distance traveller: $value")
+    println(s"$key is a long-distance traveller: $value")
   })
   longDistanceTravellers.toStream.to("long-distance-travellers")
 
