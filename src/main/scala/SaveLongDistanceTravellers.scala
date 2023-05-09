@@ -7,7 +7,7 @@ import java.time.Duration
 import scala.jdk.CollectionConverters._
 import java.util.Properties
 
-object SaveLongDistanceFlyers extends App {
+object SaveLongDistanceTravellers extends App {
   val dbConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "abc123")
   
   val props: Properties = new Properties()
@@ -26,9 +26,9 @@ object SaveLongDistanceFlyers extends App {
     val records = consumer.poll(Duration.ofMillis(300))
     println(s"Got ${records.count()} records")
     records.records("long-distance-travellers").asScala.foreach { record =>
-      val beeId = record.key()
+      val tId = record.key()
       val squares = record.value()
-      val ps = dbConn.prepareStatement(s"insert into longdistancetravellers(bee_id, squares) values('$beeId', '$squares') on conflict do nothing")
+      val ps = dbConn.prepareStatement(s"insert into longdistancetravellers(t_id, squares) values('$tId', '$squares') on conflict do nothing")
       println(ps)
       ps.executeUpdate()
     }
