@@ -8,7 +8,7 @@ import java.time.Duration
 import org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG
 import org.apache.kafka.streams.kstream.{TimeWindows, Windowed}
 
-object CountBeeLandings extends App {
+object CountVehicleStops extends App {
   import Serdes._
   val T  = 20
   val props = new Properties()
@@ -25,22 +25,22 @@ object CountBeeLandings extends App {
 
   val textLines: KStream[String, String] = builder.stream[String, String]("events")
 
-  val beeLandings: KStream[String, (Int, Int)] = textLines
+  val tLandings: KStream[String, (Int, Int)] = textLines
     .mapValues(value => {
       val parts = value.split(",")
       (parts(2).toInt, parts(3).toInt)
     })
 
-  val beeCounts: KTable[Windowed[String], Long] = beeLandings
+  val tCounts: KTable[Windowed[String], Long] = tLandings
     .map((_, value) => (s"${value._1},${value._2}", ""))
     .groupByKey
     .windowedBy(TimeWindows.of(Duration.ofSeconds(T)))
     .count()
 
-  beeCounts.toStream.foreach((key, value) => {
-    println(s"Bee count for square $key: $value")
+  tCounts.toStream.foreach((key, value) => {
+    println(s"traveller count for square $key: $value")
   })
-  beeCounts.toStream.to("bee-counts")
+  tCounts.toStream.to("t-counts")
 
   val streams: KafkaStreams = new KafkaStreams(builder.build(), props)
   streams.start()
