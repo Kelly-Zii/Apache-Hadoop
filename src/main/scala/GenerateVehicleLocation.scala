@@ -7,10 +7,10 @@ import org.apache.kafka.common.serialization.StringSerializer
 
 import java.util.Properties
 
-object GenerateBeeFlight extends App {
+object GenerateVehicleLocation extends App {
 
   val props: Properties = new Properties()
-  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "generate-bee-flight")
+  props.put(StreamsConfig.APPLICATION_ID_CONFIG, "generate-t-flight")
   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
   props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
   props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
@@ -24,11 +24,11 @@ object GenerateBeeFlight extends App {
   val H = 10
 
   def generateLandingEvent(): String = {
-    val beeId = UUID.randomUUID().toString
+    val tId = UUID.randomUUID().toString
     val timestamp = System.currentTimeMillis() / 1000
     val x = Random.nextInt(W)
     val y = Random.nextInt(H)
-    s"$beeId,$timestamp,$x,$y"
+    s"$tId,$timestamp,$x,$y"
   }
 
   def sendLandingEvent(producer: Producer[String, String]): Unit = {
